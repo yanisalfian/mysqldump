@@ -42,8 +42,10 @@
     },
     "homepage": "https://github.com/assignar/mysqldump",
     "dependencies": {
+        "7zip-bin": "^5.0.3",
         "deepmerge": "^3.2.0",
         "mysql2": "^1.6.5",
+        "node-7z": "^2.1.1",
         "sql-formatter": "^2.3.2",
         "sqlstring": "^2.3.1"
     },

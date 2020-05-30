@@ -13,10 +13,11 @@ import { getTriggerDump } from './getTriggerDump';
 import { getProcedureDump } from './getProcedureDump';
 import { getFunctionDump } from './getFunctionDump';
 import { getDataDump } from './getDataDump';
-import { compressFile } from './compressFile';
+//import { compressFile } from './compressFile';
 import { DB } from './DB';
 import { ERRORS } from './Errors';
 import { HEADER_VARIABLES, FOOTER_VARIABLES } from './sessionVariables';
+import { compress7z } from './compress7z';
 
 const defaultOptions: Options = {
     connection: {
@@ -254,7 +255,7 @@ export default async function main(inputOptions: Options): Promise<DumpReturn> {
 
         // compress output file
         if (options.dumpToFile && options.compressFile) {
-            await compressFile(options.dumpToFile);
+            await compress7z(options.dumpToFile, options.compressFilePassword);
         }
 
         return res;

@@ -289,10 +289,15 @@ export interface Options {
 	 */
 	dumpToFile?: string | null;
 	/**
-	 * Should the output file be compressed (gzip)?
+	 * Should the output file be compressed (7z)?
 	 * Defaults to false.
 	 */
 	compressFile?: boolean;
+	/**
+	 * Set the password of compressed file
+	 * Defaults to null.
+	 */
+	compressFilePassword?: string | null;
 }
 export interface ColumnList {
 	/**
