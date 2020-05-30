@@ -10,6 +10,8 @@ import { DumpReturn } from './interfaces/DumpReturn';
 import { getTables } from './getTables';
 import { getSchemaDump } from './getSchemaDump';
 import { getTriggerDump } from './getTriggerDump';
+import { getProcedureDump } from './getProcedureDump';
+import { getFunctionDump } from './getFunctionDump';
 import { getDataDump } from './getDataDump';
 import { compressFile } from './compressFile';
 import { DB } from './DB';
@@ -52,9 +54,19 @@ const defaultOptions: Options = {
             includeViewData: false,
             where: {},
             returnFromFunction: false,
-            maxRowsPerInsertStatement: 1,
+            maxRowsPerInsertStatement: 10,
         },
         trigger: {
+            delimiter: ';;',
+            dropIfExist: true,
+            definer: false,
+        },
+        procedure: {
+            delimiter: ';;',
+            dropIfExist: true,
+            definer: false,
+        },
+        function: {
             delimiter: ';;',
             dropIfExist: true,
             definer: false,
@@ -127,6 +139,8 @@ export default async function main(inputOptions: Options): Promise<DumpReturn> {
                 schema: null,
                 data: null,
                 trigger: null,
+                procedure: null,
+                function: null,
             },
             tables: await getTables(
                 connection,
@@ -172,6 +186,32 @@ export default async function main(inputOptions: Options): Promise<DumpReturn> {
                 .trim();
         }
 
+        // dump the procedure if requested
+        if (options.dump.procedure !== false) {
+            const procedures = await getProcedureDump(
+                connection,
+                options.connection.database,
+                options.dump.procedure,
+            );
+            res.dump.procedure = procedures
+                .map(proc => proc)
+                .join('\n')
+                .trim();
+        }
+
+        // dump the function if requested
+        if (options.dump.function !== false) {
+            const functions = await getFunctionDump(
+                connection,
+                options.connection.database,
+                options.dump.function,
+            );
+            res.dump.function = functions
+                .map(funct => funct)
+                .join('\n')
+                .trim();
+        }
+
         // data dump uses its own connection so kill ours
         await connection.end();
 
@@ -195,6 +235,16 @@ export default async function main(inputOptions: Options): Promise<DumpReturn> {
         // write the triggers to the file
         if (options.dumpToFile && res.dump.trigger) {
             fs.appendFileSync(options.dumpToFile, `${res.dump.trigger}\n\n`);
+        }
+
+        // write the procedure to the file
+        if (options.dumpToFile && res.dump.procedure) {
+            fs.appendFileSync(options.dumpToFile, `${res.dump.procedure}\n\n`);
+        }
+
+        // write the function to the file
+        if (options.dumpToFile && res.dump.function) {
+            fs.appendFileSync(options.dumpToFile, `${res.dump.function}\n\n`);
         }
 
         // reset all of the variables

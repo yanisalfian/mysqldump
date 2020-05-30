@@ -159,6 +159,44 @@ interface TriggerDumpOptions {
     definer?: boolean;
 }
 
+interface ProcedureDumpOptions {
+    /**
+     * The temporary delimiter to use between statements.
+     * Set to false to not use delmiters
+     * Defaults to ';;'.
+     */
+    delimiter?: string | false;
+    /**
+     * Drop triggers before creation.
+     * Defaults to false.
+     */
+    dropIfExist?: boolean;
+    /**
+     * Include the `DEFINER = {\`user\`@\`host\` | CURRENT_USER}` in the view definition or not
+     * Defaults to false.
+     */
+    definer?: boolean;
+}
+
+interface FunctionDumpOptions {
+    /**
+     * The temporary delimiter to use between statements.
+     * Set to false to not use delmiters
+     * Defaults to ';;'.
+     */
+    delimiter?: string | false;
+    /**
+     * Drop triggers before creation.
+     * Defaults to false.
+     */
+    dropIfExist?: boolean;
+    /**
+     * Include the `DEFINER = {\`user\`@\`host\` | CURRENT_USER}` in the view definition or not
+     * Defaults to false.
+     */
+    definer?: boolean;
+}
+
 interface DataDumpOptions {
     /**
      * True to run a sql formatter over the output, false otherwise.
@@ -232,6 +270,16 @@ interface DumpOptions {
      * Defaults to including the triggers.
      */
     trigger?: false | TriggerDumpOptions;
+    /**
+     * Explicitly set to false to not include procedure in the dump.
+     * Defaults to including the procedure.
+     */
+    procedure?: false | ProcedureDumpOptions;
+    /**
+     * Explicitly set to false to not include procedure in the dump.
+     * Defaults to including the procedure.
+     */
+    function?: false | FunctionDumpOptions;
 }
 
 interface Options {
@@ -283,4 +331,6 @@ export {
     Options,
     SchemaDumpOptions,
     TriggerDumpOptions,
+    ProcedureDumpOptions,
+    FunctionDumpOptions,
 };

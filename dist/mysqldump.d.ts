@@ -155,6 +155,42 @@ export interface TriggerDumpOptions {
 	 */
 	definer?: boolean;
 }
+export interface ProcedureDumpOptions {
+	/**
+	 * The temporary delimiter to use between statements.
+	 * Set to false to not use delmiters
+	 * Defaults to ';;'.
+	 */
+	delimiter?: string | false;
+	/**
+	 * Drop triggers before creation.
+	 * Defaults to false.
+	 */
+	dropIfExist?: boolean;
+	/**
+	 * Include the `DEFINER = {\`user\`@\`host\` | CURRENT_USER}` in the view definition or not
+	 * Defaults to false.
+	 */
+	definer?: boolean;
+}
+export interface FunctionDumpOptions {
+	/**
+	 * The temporary delimiter to use between statements.
+	 * Set to false to not use delmiters
+	 * Defaults to ';;'.
+	 */
+	delimiter?: string | false;
+	/**
+	 * Drop triggers before creation.
+	 * Defaults to false.
+	 */
+	dropIfExist?: boolean;
+	/**
+	 * Include the `DEFINER = {\`user\`@\`host\` | CURRENT_USER}` in the view definition or not
+	 * Defaults to false.
+	 */
+	definer?: boolean;
+}
 export interface DataDumpOptions {
 	/**
 	 * True to run a sql formatter over the output, false otherwise.
@@ -227,6 +263,16 @@ export interface DumpOptions {
 	 * Defaults to including the triggers.
 	 */
 	trigger?: false | TriggerDumpOptions;
+	/**
+	 * Explicitly set to false to not include procedure in the dump.
+	 * Defaults to including the procedure.
+	 */
+	procedure?: false | ProcedureDumpOptions;
+	/**
+	 * Explicitly set to false to not include procedure in the dump.
+	 * Defaults to including the procedure.
+	 */
+	function?: false | FunctionDumpOptions;
 }
 export interface Options {
 	/**
@@ -315,6 +361,16 @@ export interface DumpReturn {
 		 * Null if configured not to dump.
 		 */
 		trigger: string | null;
+		/**
+		 * The concatenated SQL procedure dump for the entire database.
+		 * Null if configured not to dump.
+		 */
+		procedure: string | null;
+		/**
+		 * The concatenated SQL function dump for the entire database.
+		 * Null if configured not to dump.
+		 */
+		function: string | null;
 	};
 	tables: Array<Table>;
 }
