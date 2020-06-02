@@ -4,10 +4,16 @@
 
 Create a backup of a MySQL database.
 
+A fork of [mysqldump](https://npmjs.com/package/mysqldump). Added features:
+
+-   Dump stored procedure and functions.
+-   File compression using 7zip.
+-   Ability to set password for compressed file.
+
 ## Installation
 
 ```bash
-$ npm install mysqldump
+$ npm install @yanisalfian/mysqldump
 ```
 
 If you're using this package in typescript, you should also
@@ -42,7 +48,7 @@ mysqldump({
         database: 'my_database',
     },
     dumpToFile: './dump.sql',
-    compressFile: true,
+    compressFile: true, //output file will be ./dump.sql.7z
     compressFilePassword: 'your_password', //optional
 });
 
