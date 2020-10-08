@@ -159,18 +159,25 @@ async function getDataDump(
                 );
 
                 let rowQueue: Array<string> = [];
+                let byteSize: number = 0;
 
                 // stream the data to the file
                 query.on('result', (row: QueryRes) => {
                     // build the values list
-                    rowQueue.push(buildInsertValue(row, table));
+                    const strValue = buildInsertValue(row, table);
+                    byteSize += Buffer.from(strValue, 'utf8').byteLength;
+                    rowQueue.push(strValue);
 
                     // if we've got a full queue
-                    if (rowQueue.length === options.maxRowsPerInsertStatement) {
+                    if (
+                        byteSize >= options.maxByteLength * 1024 * 1024 ||
+                        rowQueue.length === options.maxRowsPerInsertStatement
+                    ) {
                         // create and write a fresh statement
                         const insert = buildInsert(table, rowQueue, format);
                         saveChunk(insert);
                         rowQueue = [];
+                        byteSize = 0;
                     }
                 });
                 query.on('end', () => {
@@ -179,6 +186,7 @@ async function getDataDump(
                         const insert = buildInsert(table, rowQueue, format);
                         saveChunk(insert);
                         rowQueue = [];
+                        byteSize = 0;
                     }
 
                     resolve();

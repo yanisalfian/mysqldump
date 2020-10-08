@@ -56,6 +56,7 @@ const defaultOptions: Options = {
             where: {},
             returnFromFunction: false,
             maxRowsPerInsertStatement: 10,
+            maxByteLength: 1,
         },
         trigger: {
             delimiter: ';;',

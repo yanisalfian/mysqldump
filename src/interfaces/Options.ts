@@ -224,6 +224,10 @@ interface DataDumpOptions {
      */
     maxRowsPerInsertStatement?: number;
     /**
+     * Maximum number of byte length in megabyte
+     */
+    maxByteLength?: number;
+    /**
      * True to return the data in a function, false to not.
      * This is useful in databases with a lot of data.
      *

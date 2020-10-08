@@ -710,16 +710,21 @@ function getDataDump(connectionOptions, options, tables, dumpToFile) {
                         : '';
                     const query = connection.query(`SELECT * FROM \`${table.name}\`${where}`);
                     let rowQueue = [];
+                    let byteSize = 0;
                     // stream the data to the file
                     query.on('result', (row) => {
                         // build the values list
-                        rowQueue.push(buildInsertValue(row, table));
+                        const strValue = buildInsertValue(row, table);
+                        byteSize += Buffer.from(strValue, 'utf8').byteLength;
+                        rowQueue.push(strValue);
                         // if we've got a full queue
-                        if (rowQueue.length === options.maxRowsPerInsertStatement) {
+                        if (byteSize >= options.maxByteLength * 1024 * 1024 ||
+                            rowQueue.length === options.maxRowsPerInsertStatement) {
                             // create and write a fresh statement
                             const insert = buildInsert(table, rowQueue, format$$1);
                             saveChunk(insert);
                             rowQueue = [];
+                            byteSize = 0;
                         }
                     });
                     query.on('end', () => {
@@ -728,6 +733,7 @@ function getDataDump(connectionOptions, options, tables, dumpToFile) {
                             const insert = buildInsert(table, rowQueue, format$$1);
                             saveChunk(insert);
                             rowQueue = [];
+                            byteSize = 0;
                         }
                         resolve();
                     });
@@ -910,6 +916,7 @@ const defaultOptions = {
             where: {},
             returnFromFunction: false,
             maxRowsPerInsertStatement: 10,
+            maxByteLength: 1,
         },
         trigger: {
             delimiter: ';;',
