@@ -27,6 +27,11 @@ async function getProcedureDump(
     const procedures = await connection.query<ShowProcedures>(
         `SHOW PROCEDURE STATUS WHERE Db = '${dbName}'`,
     );
+
+    if (procedures.length === 0) {
+        return output;
+    }
+
     // we create a multi query here so we can query all at once rather than in individual connections
     const getSchemaMultiQuery: Array<string> = [];
     procedures.forEach(proc => {

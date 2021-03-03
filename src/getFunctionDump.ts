@@ -28,6 +28,10 @@ async function getFunctionDump(
         `SHOW FUNCTION STATUS WHERE Db = '${dbName}'`,
     );
 
+    if (functions.length === 0) {
+        return output;
+    }
+
     // we create a multi query here so we can query all at once rather than in individual connections
     const getSchemaMultiQuery: Array<string> = [];
     functions.forEach(proc => {

@@ -260,6 +260,8 @@ export default async function main(inputOptions: Options): Promise<DumpReturn> {
         }
 
         return res;
+    } catch (error) {
+        throw error;
     } finally {
         DB.cleanup();
     }

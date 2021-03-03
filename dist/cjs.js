@@ -258,6 +258,9 @@ function getProcedureDump(connection, dbName, options) {
     return __awaiter(this, void 0, void 0, function* () {
         const output = [];
         const procedures = yield connection.query(`SHOW PROCEDURE STATUS WHERE Db = '${dbName}'`);
+        if (procedures.length === 0) {
+            return output;
+        }
         // we create a multi query here so we can query all at once rather than in individual connections
         const getSchemaMultiQuery = [];
         procedures.forEach(proc => {
@@ -303,6 +306,9 @@ function getFunctionDump(connection, dbName, options) {
     return __awaiter(this, void 0, void 0, function* () {
         const output = [];
         const functions = yield connection.query(`SHOW FUNCTION STATUS WHERE Db = '${dbName}'`);
+        if (functions.length === 0) {
+            return output;
+        }
         // we create a multi query here so we can query all at once rather than in individual connections
         const getSchemaMultiQuery = [];
         functions.forEach(proc => {
@@ -1065,6 +1071,9 @@ function main(inputOptions) {
                 yield compress7z(options.dumpToFile, options.compressFilePassword);
             }
             return res;
+        }
+        catch (error) {
+            throw error;
         }
         finally {
             DB.cleanup();
